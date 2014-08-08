@@ -27,7 +27,6 @@ public class ScreenDefinition {
             return MainConstants.EnumScreen.SETTINGS_SCREEN;
         if (libraryDetected())
             return MainConstants.EnumScreen.LIBRARY_SCREEN;
-        TestManager.log("Screen not found!");
         return MainConstants.EnumScreen.UNKNOWN_SCREEN;
     }
 

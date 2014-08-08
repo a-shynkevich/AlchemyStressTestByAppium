@@ -2,6 +2,10 @@ package bn.nook.alchemy.utils;
 
 import io.appium.java_client.AppiumDriver;
 import net.bugs.testhelper.TestHelper;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import java.io.*;
@@ -24,7 +28,8 @@ public class TestManager {
     private static String mPassword = null;
     private static String mPathToRootFolder = null;
     private static net.bugs.testhelper.helpers.PropertiesManager mPropertiesManager;
-    private static String timeLog;
+    private static String timeLog = null;
+    private static String startTestTime = null;
     private static long rowNumber = 0;
     public static AppiumDriver driver = null;
     private static String mAppID = null;
@@ -34,6 +39,8 @@ public class TestManager {
     public static void start(){
         ConfigManager configManager;
         System.out.println("setUp");
+        startTestTime = new SimpleDateFormat("HH-mm (d.MM.YYYY) ").format(Calendar.getInstance().getTime());
+        System.out.println("DATE : " + startTestTime);
         configManager = new ConfigManager();
         File appDir = new File(configManager.getProperty(ConfigurationParametersEnum.ANDROID_APP_DIR.name()));
         File app = new File(appDir, configManager.getProperty(ConfigurationParametersEnum.ANDROID_APP.name()));
@@ -54,7 +61,7 @@ public class TestManager {
 
     public static void stop(){
         if(driver != null){
-            driver.close();
+            driver.quit();
         }
     }
 
@@ -63,10 +70,11 @@ public class TestManager {
     }
 
     public static void log(String message, boolean isNewLine){
-        String fileName = mDeviceHW +" (" + mDeviceOS + ").txt";
+        new File("report/").mkdirs();
+        String fileName = "Report/" + startTestTime +" " + mDeviceHW +" (" + mDeviceOS + ").txt";
         PrintWriter out = null;
         try {
-            timeLog = new SimpleDateFormat("d.MM.YYYY HH:MM:s ").format(Calendar.getInstance().getTime());
+            timeLog = new SimpleDateFormat("HH:mm:s ").format(Calendar.getInstance().getTime());
             out = new PrintWriter(new BufferedWriter(new FileWriter(fileName, true)));
             if (isNewLine) {
                 out.print("\n" + ++rowNumber + ". " + timeLog + message);
@@ -156,6 +164,21 @@ public class TestManager {
         if(mPathToRootFolder == null)
             mPathToRootFolder = mPropertiesManager.getProperty(MainConstants.Config.REPORT_FOLDER_PROPERTY);
         return mPathToRootFolder;
+    }
+
+    public static void captureScreenshot() {
+        timeLog = new SimpleDateFormat("HH-mm-ss ").format(Calendar.getInstance().getTime());
+        new File("report/screenshot/").mkdirs();
+        String filename = "report/screenshot/"+ timeLog + mDeviceHW +"( "+ mDeviceOS +")" +  ".jpg";
+
+        File screenshot = driver.getScreenshotAs(OutputType.FILE);
+        File destFile = new File(filename);
+        try {
+            FileUtils.copyFile(screenshot, destFile);
+        } catch (Exception e) {
+            TestManager.log("Error capturing screen shot of " + filename + " test failure.", false);
+        }
+
     }
 
 }

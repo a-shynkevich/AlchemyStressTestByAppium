@@ -6,9 +6,6 @@ import bn.nook.alchemy.utils.ScreenDefinition;
 import bn.nook.alchemy.utils.TestManager;
 public class TestRunner {
 
-    private static TestManager testManager;
-
-
     public static void runTest() throws InterruptedException {
         int countUnknownScreen = 0;
         ScreenDefinition screenDefinition = new ScreenDefinition(TestManager.driver);
@@ -40,13 +37,12 @@ public class TestRunner {
                     (new Library(TestManager.driver)).start();
                     break;
                 case MainConstants.EnumScreen.UNKNOWN_SCREEN:
-                    TestManager.log("Unknown screen!");
+                    TestManager.log("Screen not found!");
                     countUnknownScreen++;
                     break;
             }
-            if(countUnknownScreen > 5){
-                testManager.takeScreenshot();
-                System.out.println("BREAK");
+            if(countUnknownScreen > 4){
+                TestManager.captureScreenshot();
                 break;
             }
         }
@@ -55,8 +51,10 @@ public class TestRunner {
 
 
     public static void main(String[] args) throws InterruptedException {
-        TestManager.start();
-        runTest();
-        TestManager.stop();
+        while (true) {
+            TestManager.start();
+            runTest();
+            TestManager.stop();
+        }
     }
 }

@@ -11,12 +11,15 @@ import org.openqa.selenium.WebElement;
 public class Home extends ScreenHelper {
 
     private static int currentScreenId = Constant.ScreenId.UNKNOWN_SCREEN;
+    private static int currentShopScreenId;
     ActionHomeScreen actionHomeScreen = null;
+    ActionShopScreen actionShopScreen = null;
     private String nameOfCurrentTab = null;
 
     public Home(AppiumDriver driver) {
         super(driver);
         actionHomeScreen = new ActionHomeScreen();
+        actionShopScreen = new ActionShopScreen();
     }
 
     public static class Constant{
@@ -27,6 +30,13 @@ public class Home extends ScreenHelper {
             //            public static final int TEMPORARY_SCREEN = 2;
             public static final int QUICK_READS_SCREEN = 3;
 //            public static final int LIBRARY_SCREEN = 4;
+        }
+
+        public static class ShopScreenID{
+            public static final int BOOKS_SCREEN = 1;
+            public static final int MAGAZINES_Screen = 2;
+            public static final int KIDS_SCREEN = 3;
+            public static final int NEWSPAPERS = 4;
         }
 
         public static class Id{
@@ -41,6 +51,13 @@ public class Home extends ScreenHelper {
             public static final String TEMPORARY_SCREEN = "Temporary";
             public static final String QUICK_READS_SCREEN = "Quick Reads";
             public static final String LIBRARY_SCREEN = "Library";
+        }
+
+        public static class ContentDescID{
+            public static final String BOOKS = "Books";
+            public static final String MAGAZINES = "Magazines";
+            public static final String KIDS = "Kids";
+            public static final String NEWSPAPERS = "Newspapers";
         }
     }
 
@@ -135,18 +152,83 @@ public class Home extends ScreenHelper {
 
     private class ActionShopScreen {
 
-    }
+        private void tapOnBooks() {
+            WebElement booksBtn = waitForElement(By.id(Constant.ContentDescID.BOOKS), driver, 60);
+            if (booksBtn == null) {
+                TestManager.log("\"Books\" button was not found!");
+            } else {
+                booksBtn.click();
+                TestManager.log("Click on the \"Books\" button.", false);
+            }
+        }
 
-    private class ActionTemporaryScreen {
+        private void tapOnMagazines() {
+            WebElement magazinesBtn = waitForElement(By.id(Constant.ContentDescID.MAGAZINES), driver, 60);
+            if (magazinesBtn == null) {
+                TestManager.log("\"Magazines\" button was not found!");
+            } else {
+                magazinesBtn.click();
+                TestManager.log("Click on the \"Magazines\" button.", false);
+            }
+        }
 
-    }
+        private void tapOnKids() {
+            WebElement kidsBtn = waitForElement(By.id(Constant.ContentDescID.KIDS), driver, 60);
+            if (kidsBtn == null) {
+                TestManager.log("\"Kids\" button was not found!");
+            } else {
+                kidsBtn.click();
+                TestManager.log("Click on the \"Kids\" button.", false);
+            }
+        }
 
-    private class ActionQuckReadsScreen{
+        private void tapOnNewspapers() {
+            WebElement newspapersBtn = waitForElement(By.id(Constant.ContentDescID.KIDS), driver, 60);
+            if (newspapersBtn == null) {
+                TestManager.log("\"Newspapers\" button was not found!");
+            } else {
+                newspapersBtn.click();
+                TestManager.log("Click on the \"Newspapers\" button.", false);
+            }
+        }
 
-    }
+        public class ActionShopBooksScreen {
 
-    private class ActionLibraryScreen{
+        }
 
+        public class ActionShopMagazinesScreen {
+
+        }
+
+        public class ActionShopKidsScreen {
+
+        }
+
+        public class ActionShopNewspapersScreen {
+
+        }
+
+        //todo
+        private boolean isExistShopBookScreen() {
+            if (isWebElementPresent(By.id("NYT Bestsellers"))) {
+                currentShopScreenId = Constant.ShopScreenID.BOOKS_SCREEN;
+                return true;
+            } else return false;
+        }
+
+
+
+        private class ActionTemporaryScreen {
+
+        }
+
+        private class ActionQuckReadsScreen {
+
+        }
+
+        private class ActionLibraryScreen {
+
+        }
     }
 
     public boolean isExistMyHomeScreen(){
@@ -199,7 +281,7 @@ public class Home extends ScreenHelper {
     }
 
     public void randomActionShopScreen(){
-        switch (getRandomNumber(3)){
+        switch (3){
             case 0:
                 actionHomeScreen.swipeRightLeft();
                 break;
@@ -208,6 +290,9 @@ public class Home extends ScreenHelper {
                 break;
             case 2:
                 actionHomeScreen.openSideBar();
+                break;
+            case 3:
+                actionShopScreen.tapOnBooks();
                 break;
         }
     }
